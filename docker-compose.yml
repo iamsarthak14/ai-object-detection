@@ -1,0 +1,32 @@
+services:
+  backend:
+    build:
+      context: ./Model/AI-Backend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./Model/AI-Backend:/app
+      # Exclude node_modules and other build artifacts
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./ui
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./ui:/app
+      # Exclude node_modules and other build artifacts
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+    depends_on:
+      - backend
